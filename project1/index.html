@@ -20,7 +20,7 @@
 <p>$$ K(x):= e^{-\frac{|x|^2}{2}}$$</p>
 <li>The Tricubic Kernel</li>
 <p>$$ K(x):=\begin{cases}
-  (1-|x|^3)^3&amp;if|x|&lt;1\\
+  (1-|x|^3)^3&amp;if |x|&lt;1\\
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
@@ -29,7 +29,7 @@ $$</p>
 </code></pre>
 <li>The Epanechnikov Kernel</li>
 <p>$$ K(x):=\begin{cases}
-\frac{3}{4}(1-|x|^2)&amp;if&amp;|x|&lt;1 \\
+\frac{3}{4}(1-|x|^2)&amp;if |x|&lt;1 \\
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
@@ -39,7 +39,7 @@ def Epanechnikov(x):
 </code></pre>
 <li>The Quartic Kernel</li>
 <p>$$ K(x):=\begin{cases}
-\frac{15}{16}(1-|x|^2)^2 &amp;if&amp;|x|&lt;1 \\
+\frac{15}{16}(1-|x|^2)^2 &amp;if |x|&lt;1 \\
 0 &amp;\text{otherwise}
 \end{cases}
 $$</p>
@@ -134,7 +134,7 @@ plt.show
 <p><img src="/project1/exampleplot.png" 
         alt="\label{fig:exampleplot}"
         width='600'
-        height='300'></p>
+        height='310'></p>
 <h2 id="references">References</h2>
 <ol>
 <li><a href="https://www.geeksforgeeks.org/locally-weighted-linear-regression-using-python/">LWR Visualization</a></li>
