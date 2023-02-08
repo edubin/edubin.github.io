@@ -24,7 +24,7 @@
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
-<pre><code class="lang-python">def tricubic(x):
+<pre class='prettyprint'><code class="lang-python">def tricubic(x):
   <span class="hljs-built_in">return</span> <span class="hljs-built_in">np</span>.where(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)&gt;<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,(<span class="hljs-number">1</span>-<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)**<span class="hljs-number">3</span>)**<span class="hljs-number">3</span>)
 </code></pre>
 <li>The Epanechnikov Kernel</li>
