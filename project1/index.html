@@ -5,12 +5,12 @@
 <h1 id="introduction-to-locally-weighted-regression">Introduction to Locally Weighted Regression</h1>
 <p><strong>Main Idea:</strong> In Locally Weighted Regression (LWR), a regression is performed around a single point of interest. LWR fits a nonparametric regression curve to a scatterplot.</p>
 <p>While trends and associations in regression are generally nonlinear; these trends can be interpreted linearly by using LWR. Training data is weighted by each data point&#39;s distance from the point of interest using a kernel (more on this later). Then, a regression is computed using the <em>weighted</em> points. </p>
-<p>The independent observations are the rows of a matrix <em>X</em>. Features are represented in columns, denoted by <em>p</em>. As such, every row is a vector in $$mathbb{R}^p$$. We use a method called <em>metric</em> to compute these distances between each observation and the point of interest. Since observations contain multiple features, we interpret them at them as vectors in a finite-dimensional Euclidean space. The vector equation is:</p>
+<p>The independent observations are the rows of a matrix <em>X</em>. Features are represented in columns, denoted by <em>p</em>. As such, every row is a vector. We use a method called <em>metric</em> to compute these distances between each observation and the point of interest. Since observations contain multiple features, we interpret them at them as vectors in a finite-dimensional Euclidean space. The vector equation is:</p>
 <p>$$ dist(\vec{v},\vec{w})=\sqrt{(v_1-w_1)^2+(v_2-w_2)^2+...(v_p-w_p)^2}$$</p>
 <p>There are <em>n</em> different weight vectors because there are $n$ observations.</p>
 <p>The predictions we make are a linear combination of the actual observed values of the dependent variable. This is expressed in the equation:</p>
 <p>$$\large \hat{y} = X(X^TWX)^{-1}(X^TWy)$$</p>
-<p>For locally weighted regression, $$\hat{y}$$ is obtained as different linear combinationz of the values of y.</p>
+<p>For locally weighted regression, $\hat{y}$ is obtained as different linear combinationz of the values of y.</p>
 <h1 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h1>
 <p><img src="/project1/ps3-660x280.png" alt="\label{fig:locregression}"></p>
 <p>This image illistrates how the locally weighted regression is optimized with tau, or bandwidth. When tau is too large or too small, the regression is not fitting the data appropriately. Data validation and scatterplots can help us see if the value tau is not optinal (1). A larger tau will result in a smoother curve, however this is not always desired. To address this, different values for tau, along with different kernels which alter the shape of the curve.</p>
