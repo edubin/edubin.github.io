@@ -2,16 +2,16 @@
 </script>
 
 
-<h1> id="introduction-to-locally-weighted-regression">Introduction to Locally Weighted Regression</h1>
+<h1 id="introduction-to-locally-weighted-regression">Introduction to Locally Weighted Regression</h1>
 <p><strong>Main Idea:</strong> Trends and associations are generally nonlinear; however, <em>locally</em>, trends can be interpreted linearly.</p>
 <p>In this context, local properties are relative to a metric. A metric is a method by which we compute the distance between two observations. Observations contain multiple features, and if they are numeric, we can see them as vectors in a finite-dimensional Euclidean space.</p>
 <p>The independent observations are the rows of the matrix $X$. Each row has a number of columns (this is the number of features) and we can denote it by $p.$ As such, every row is a vector in $\mathbb{R}^p.$ The distance between two independent observations is the Euclidean distance between the two represented $p-$dimensional vectors. The equation is:</p>
 <p>$$ dist(\vec{v},\vec{w})=\sqrt{(v_1-w_1)^2+(v_2-w_2)^2+...(v_p-w_p)^2}$$</p>
 <p>We shall have $n$ different weight vectors because we have $n$ different observations.</p>
-<h1 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h1>
+<h2 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h2>
 <p><img src="/project1/ps3-660x280.png" alt="\label{fig:locregression}"></p>
 <p>This image illistrates how the locally weighted regr∏ession is optimized with tau, or bandwith. When tau is too large or too small, the regression is voerfitting or underfitting the training data. (1)</p>
-<h1 id="kernal-selection">Kernal Selection</h1>
+<h2 id="kernal-selection">Kernal Selection</h2>
 <p>There are many choices of kernels for locally weighted regression. The idea is to have a function with one local maximum that has a compact support.</p>
 <ul>
 <li><p>these make more sense when they are plotted</p>
