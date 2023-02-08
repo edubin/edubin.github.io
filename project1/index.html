@@ -17,22 +17,17 @@
 <p>There are a wide array of kernels that support locally weighted regression. When selecting a kernel, the goal is to find one in which the function has one local maximum that has a compact support. Some kernels we can use are:</p>
 <ol>
 <li>The Exponential Kernel (based on exponential function)</li>
-</ol>
 <p>$$ K(x):= e^{-\frac{|x|^2}{2}}$$</p>
-<ol>
 <li>The Tricubic Kernel</li>
-</ol>
 <p>$$ K(x):=\begin{cases}
-  (1-|x|^3)^3&amp;if&amp;|x|&lt;1\\
+  (1-|x|^3)^3&amp;if|x|&lt;1\\
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
 <pre><code class="lang-python">def tricubic(x):
   <span class="hljs-built_in">return</span> <span class="hljs-built_in">np</span>.where(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)&gt;<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,(<span class="hljs-number">1</span>-<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)**<span class="hljs-number">3</span>)**<span class="hljs-number">3</span>)
 </code></pre>
-<ol>
 <li>The Epanechnikov Kernel</li>
-</ol>
 <p>$$ K(x):=\begin{cases}
 \frac{3}{4}(1-|x|^2)&amp;if&amp;|x|&lt;1 \\
 0 &amp; \text{otherwise}
@@ -42,9 +37,7 @@ $$</p>
 def Epanechnikov(x):
   <span class="hljs-built_in">return</span> <span class="hljs-built_in">np</span>.where(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)&gt;<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">3</span>/<span class="hljs-number">4</span>*(<span class="hljs-number">1</span>-<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)**<span class="hljs-number">2</span>))
 </code></pre>
-<ol>
 <li>The Quartic Kernel</li>
-</ol>
 <p>$$ K(x):=\begin{cases}
 \frac{15}{16}(1-|x|^2)^2 &amp;if&amp;|x|&lt;1 \\
 0 &amp;\text{otherwise}
@@ -140,8 +133,8 @@ plt.show
 </code></pre>
 <p><img src="/project1/exampleplot.png" 
         alt="\label{fig:exampleplot}"
-        width='700'
-        height='350'></p>
+        width='600'
+        height='300'></p>
 <h2 id="references">References</h2>
 <ol>
 <li><a href="https://www.geeksforgeeks.org/locally-weighted-linear-regression-using-python/">LWR Visualization</a></li>
