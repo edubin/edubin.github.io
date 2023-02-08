@@ -1,6 +1,3 @@
-theme: jekyll-theme-architect
-remote_theme: mmistakes/minimal-mistakes
-
 ## Introduction to Locally Weighted Regression ##
 
 **Main Idea:** Trends and associations are generally nonlinear; however, *locally*, trends can be interpreted linearly.
@@ -15,7 +12,6 @@ We shall have $n$ different weight vectors because we have $n$ different observa
 
 # Visual Intuition for Locally Weighted Regression
 
-<img src="/project1/ps3-660x280.png" width=400 height='600' alt='hi' class ='inline'/>
 ![\label{fig:locregression}](/project1/ps3-660x280.png)
 
 This image illistrates how the locally weighted regression is optimized with tau, or bandwith. When tau is too large or too small, the regression is voerfitting or underfitting the training data. (1)
