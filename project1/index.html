@@ -3,22 +3,22 @@
 
 
 <h1 id="introduction-to-locally-weighted-regression">Introduction to Locally Weighted Regression</h1>
-<p><strong>Main Idea:</strong> Trends and associations are generally nonlinear; however, <em>locally</em>, trends can be interpreted linearly.</p>
-<p>In this context, local properties are relative to a metric. A metric is a method by which we compute the distance between two observations. Observations contain multiple features, and if they are numeric, we can see them as vectors in a finite-dimensional Euclidean space.</p>
-<p>The independent observations are the rows of the matrix $X$. Each row has a number of columns (this is the number of features) and we can denote it by $p.$ As such, every row is a vector in $\mathbb{R}^p.$ The distance between two independent observations is the Euclidean distance between the two represented $p-$dimensional vectors. The equation is:</p>
+<p><strong>Main Idea:</strong> In Locally Weighted Regression (LWR), a regression is performed around a single point of interest. LWR fits a nonparametric regression curve to a scatterplot.</p>
+<p>While trends and associations in regression are generally nonlinear; these trends can be interpreted linearly by using LWR. Training data is weighted by each data point&#39;s distance from the point of interest using a kernel (more on this later). Then, a regression is computed using the <em>weighted</em> points. </p>
+<p>The independent observations are the rows of a matrix <em>X</em>. Features are represented in columns, denoted by <em>p</em>. As such, every row is a vector in $$\mathbb{R}^p$$. We use a method called <em>metric</em> to compute these distances between each observation and the point of interest. Since observations contain multiple features, we interpret them at them as vectors in a finite-dimensional Euclidean space. The vector equation is:</p>
 <p>$$ dist(\vec{v},\vec{w})=\sqrt{(v_1-w_1)^2+(v_2-w_2)^2+...(v_p-w_p)^2}$$</p>
-<p>We shall have $n$ different weight vectors because we have $n$ different observations.</p>
-<h2 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h2>
+<p>There are <em>n</em> different weight vectors because there are $n$ observations.</p>
+<p>The predictions we make are a linear combination of the actual observed values of the dependent variable. This is expressed in the equation:</p>
+<p>$$\large \hat{y} = X(X^TWX)^{-1}(X^TWy)$$</p>
+<p>For locally weighted regression, $$\hat{y}$$ is obtained as different linear combinationz of the values of y.</p>
+<h1 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h1>
 <p><img src="/project1/ps3-660x280.png" alt="\label{fig:locregression}"></p>
-<p>This image illistrates how the locally weighted regr∏ession is optimized with tau, or bandwith. When tau is too large or too small, the regression is voerfitting or underfitting the training data. (1)</p>
-<h2 id="kernal-selection">Kernal Selection</h2>
-<p>There are many choices of kernels for locally weighted regression. The idea is to have a function with one local maximum that has a compact support.</p>
-<ul>
-<li><p>these make more sense when they are plotted</p>
-</li>
-<li><p>The Exponential Kernel (based on exponential function)</p>
-</li>
-</ul>
+<p>This image illistrates how the locally weighted regression is optimized with tau, or bandwidth. When tau is too large or too small, the regression is not fitting the data appropriately. Data validation and scatterplots can help us see if the value tau is not optinal (1). A larger tau will result in a smoother curve, however this is not always desired. To address this, different values for tau, along with different kernels which alter the shape of the curve.</p>
+<h1 id="kernal-selection">Kernal Selection</h1>
+<p>There are a wide array of kernels that support locally weighted regression. When selecting a kernel, the goal is to find one in which the function has one local maximum that has a compact support. Some kernels we can use are:</p>
+<ol>
+<li>The Exponential Kernel (based on exponential function)</li>
+</ol>
 <p>$$ K(x):= e^{-\frac{|x|^2}{2}}$$</p>
 <ol>
 <li>The Tricubic Kernel</li>
@@ -28,14 +28,21 @@
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
+<pre><code class="lang-python">def tricubic(x):
+  <span class="hljs-built_in">return</span> <span class="hljs-built_in">np</span>.where(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)&gt;<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,(<span class="hljs-number">1</span>-<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)**<span class="hljs-number">3</span>)**<span class="hljs-number">3</span>)
+</code></pre>
 <ol>
-<li>The Epanechnikov Kernel (name of the person who found it, proved to be very efficient)</li>
+<li>The Epanechnikov Kernel</li>
 </ol>
 <p>$$ K(x):=\begin{cases}
 \frac{3}{4}(1-|x|^2)&amp;if&amp;|x|&lt;1 \
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
+<pre><code class="lang-python"># Epanechnikov Kernel
+def Epanechnikov(x):
+  <span class="hljs-built_in">return</span> <span class="hljs-built_in">np</span>.where(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)&gt;<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">3</span>/<span class="hljs-number">4</span>*(<span class="hljs-number">1</span>-<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)**<span class="hljs-number">2</span>))
+</code></pre>
 <ol>
 <li>The Quartic Kernel</li>
 </ol>
@@ -44,26 +51,97 @@ $$</p>
 0 &amp;\text{otherwise}
 \end{cases}
 $$</p>
-<pre><code class="lang-python">#!/usr/local/bin/<span class="hljs-keyword">python3</span>
-# testargs.<span class="hljs-keyword">py</span>
-
-import sys
-
-<span class="hljs-keyword">print</span> (<span class="hljs-string">"{} is the name of the script."</span> . format(sys.<span class="hljs-built_in">argv</span>[<span class="hljs-number">0</span>]))
-<span class="hljs-keyword">print</span> (<span class="hljs-string">"There are {} arguments: {}"</span> . format(<span class="hljs-built_in">len</span>(sys.<span class="hljs-built_in">argv</span>), str(sys.<span class="hljs-built_in">argv</span>)))
-
-<span class="hljs-keyword">for</span> ind, arg in enumerate(sys.<span class="hljs-built_in">argv</span>):
-    <span class="hljs-keyword">print</span> (<span class="hljs-string">"[{}]: {} {}"</span>.format(ind,arg,sys.<span class="hljs-built_in">argv</span>[ind]))
+<pre><code class="lang-python"># Quartic Kernel
+def Quartic(x):
+  <span class="hljs-built_in">return</span> <span class="hljs-built_in">np</span>.where(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)&gt;<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">15</span>/<span class="hljs-number">16</span>*(<span class="hljs-number">1</span>-<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x)**<span class="hljs-number">2</span>)**<span class="hljs-number">2</span>)
+</code></pre>
+<p>It is important that the kernel function is vectorized before it is used for LWR. The functions in numpy are already vectorized, so we can use their functions to avoid an extra step of vectorizing the function.</p>
+<p>When defining the kernel function, tau represents how wide the kernel is, and x represents the center (or point of interest).</p>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">kernel_function</span><span class="hljs-params">(xi,x<span class="hljs-number">0</span>,kern, tau)</span></span>: 
+    <span class="hljs-keyword">return</span> kern((xi - x<span class="hljs-number">0</span>)/(<span class="hljs-number">2</span>*tau))
+</code></pre>
+<p>When the vector of data is large, we can apply the kernel around each point xi to get values that correspond to each value of x.</p>
+<pre><code class="lang-python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">weights_matrix</span><span class="hljs-params">(x,kern,tau)</span></span>:
+  n = len(x)
+  <span class="hljs-keyword">return</span> np.array([kernel_function(x,x[i],kern,tau) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(n)])
 </code></pre>
 <h2 id="lowess-function">Lowess Function</h2>
-<p>The lowess function fits a nonparametric regression curve to a scatterplot.
-The arrays x and y contain an equal number of elements; each pair
-(x[i], y[i]) defines a data point in the scatterplot. The function returns
-the estimated (smooth) values of y.
-The smoothing span is given by f. A larger value for f will result in a
-smoother curve. The number of robustifying iterations is given by iter. The
-function will run faster with a smaller number of iterations.</p>
+<p>The Lowess Function is used to perform Locally Weighted Regression. Parameters x and y are arrays that contain an equal number of element. Each pair x[i] and y[i] define a data point in the scatterplot. The function returns the estimated values of y. </p>
+<p>There are a few ways to approach the Lowess Function. The first way is by solving a system of linear equations with fixed data and weights:</p>
+<pre><code class="lang-python">def lowess(x, y, kern, tau):
+    n = len(x)
+    yest = <span class="hljs-built_in">np</span>.zeros(n)
+
+    #Initializing all weights from the bell shape kernel function    
+    w = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([kern((x - x[i])/(<span class="hljs-number">2</span>*tau)) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n)])     
+
+    #Looping through all x-<span class="hljs-built_in">points</span>
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+        weights = w[:, i]
+        b = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * y), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * y * x)])
+        A = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([[<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * x)],
+                    [<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * x), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * x * x)]])
+        <span class="hljs-built_in">beta</span> = linalg.<span class="hljs-built_in">solve</span>(A, b) # A*<span class="hljs-built_in">beta</span> = b
+        # <span class="hljs-built_in">beta</span>, res, rnk, s = linalg.lstsq(A, b)
+        yest[i] = <span class="hljs-built_in">beta</span>[<span class="hljs-number">0</span>] + <span class="hljs-built_in">beta</span>[<span class="hljs-number">1</span>] * x[i] 
+
+    <span class="hljs-built_in">return</span> yest
+</code></pre>
+<p>The second way is by solving a linear equation for each weight:</p>
+<pre><code class="lang-python">def <span class="hljs-keyword">lowess</span>(x, y, kern, tau=0.05):
+    <span class="hljs-keyword">n</span> = len(x)
+    yest = np.zeros(<span class="hljs-keyword">n</span>)
+
+    #Initializing all weights from the bell shape kernel function    
+    w = weights_matrix(x,kern,tau)    
+
+    #Looping through all x-points
+    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-keyword">range</span>(<span class="hljs-keyword">n</span>):
+        weights = w[:, i]
+        lm.<span class="hljs-keyword">fit</span>(np.<span class="hljs-built_in">diag</span>(w[:,i]).dot(x.<span class="hljs-keyword">reshape</span>(-1,1)),np.<span class="hljs-built_in">diag</span>(w[:,i]).dot(y.<span class="hljs-keyword">reshape</span>(-1,1)))
+        yest[i] = lm.<span class="hljs-keyword">predict</span>(x[i].<span class="hljs-keyword">reshape</span>(-1,1)) 
+
+    <span class="hljs-keyword">return</span> yest
+</code></pre>
+<p>Finally, there is the approach by Alex Gramfort, which incorperates the hyperparameter f. F represents a smootheing span (this is what the kernel does in the previous two functions).</p>
+<pre><code class="lang-python">def lowess_ag(x, y, f, iter):
+    n = len(x)
+    r = int(ceil(f * n))
+    h = [<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sort</span>(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(x - x[i]))[r] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n)]
+    w = <span class="hljs-built_in">np</span>.clip(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>((x[:, None] - x[None, :]) / h), <span class="hljs-number">0.0</span>, <span class="hljs-number">1.0</span>)
+    w = (<span class="hljs-number">1</span> - w ** <span class="hljs-number">3</span>) ** <span class="hljs-number">3</span>
+    yest = <span class="hljs-built_in">np</span>.zeros(n)
+    <span class="hljs-built_in">delta</span> = <span class="hljs-built_in">np</span>.ones(n)
+    <span class="hljs-keyword">for</span> iteration <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(iter):
+        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(n):
+            weights = <span class="hljs-built_in">delta</span> * w[:, i]
+            b = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * y), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * y * x)])
+            A = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">array</span>([[<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * x)],
+                          [<span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * x), <span class="hljs-built_in">np</span>.<span class="hljs-built_in">sum</span>(weights * x * x)]])
+            <span class="hljs-built_in">beta</span> = linalg.<span class="hljs-built_in">solve</span>(A, b)
+            yest[i] = <span class="hljs-built_in">beta</span>[<span class="hljs-number">0</span>] + <span class="hljs-built_in">beta</span>[<span class="hljs-number">1</span>] * x[i]
+
+        residuals = y - yest
+        s = <span class="hljs-built_in">np</span>.<span class="hljs-built_in">median</span>(<span class="hljs-built_in">np</span>.<span class="hljs-built_in">abs</span>(residuals))
+        <span class="hljs-built_in">delta</span> = <span class="hljs-built_in">np</span>.clip(residuals / (<span class="hljs-number">6.0</span> * s), -<span class="hljs-number">1</span>, <span class="hljs-number">1</span>)
+        <span class="hljs-built_in">delta</span> = (<span class="hljs-number">1</span> - <span class="hljs-built_in">delta</span> ** <span class="hljs-number">2</span>) ** <span class="hljs-number">2</span>
+
+    <span class="hljs-built_in">return</span> yest
+</code></pre>
+<p>Ultimatly, different kernels and different taus will help us to generate better estimations.</p>
+<h2 id="validation">Validation</h2>
+<p>To validate our function, we can use a Train-Test split. To do this, we can either generate data, or import data to separate into testing and training data. We then can plot the kernal regression values of y with the true data in order to gauge the effectiveness of the regression.</p>
+<p>Here is an example of some code to generate a scatterpot to validate data, along with the resulting plot:</p>
+<pre><code class="lang-python">plt.figure(figsize=(<span class="hljs-number">10</span>,<span class="hljs-number">6</span>))
+plt.scatter(x,ynoisy,ec=<span class="hljs-string">'blue'</span>,alpha=<span class="hljs-number">0.5</span>)
+plt.plot(x,yest,color=<span class="hljs-string">'red'</span>,lw=<span class="hljs-number">2</span>,<span class="hljs-keyword">label</span><span class="bash">=<span class="hljs-string">'Kernel Regression'</span>)
+</span>plt.plot(x,y,color=<span class="hljs-string">'green'</span>,lw=<span class="hljs-number">2</span>,<span class="hljs-keyword">label</span><span class="bash">=<span class="hljs-string">'Truth'</span>)
+</span>plt.legend()
+plt.show
+</code></pre>
+<p><img src="/project1/exampleplot.png" alt="\label{fig:exampleplot}"></p>
 <h2 id="references">References</h2>
 <ol>
-<li><a href="https://www.geeksforgeeks.org/locally-weighted-linear-regression-using-python/">editior on Github</a></li>
+<li><a href="https://www.geeksforgeeks.org/locally-weighted-linear-regression-using-python/">LWR Visualization</a></li>
 </ol>
+
