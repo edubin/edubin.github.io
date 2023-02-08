@@ -10,8 +10,7 @@
 <p>There are <em>n</em> different weight vectors because there are $n$ observations.</p>
 <p>The predictions we make are a linear combination of the actual observed values of the dependent variable. This is expressed in the equation:</p>
 <p>$$\large \hat{y} = X(X^TWX)^{-1}(X^TWy)$$</p>
-<p>For locally weighted regression, $\hat{y}$ is obtained as different linear combinationz of the values of y.</p>
-<h1 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h1>
+<h2 id="visual-intuition-for-locally-weighted-regression">Visual Intuition for Locally Weighted Regression</h2>
 <p><img src="/project1/ps3-660x280.png" alt="\label{fig:locregression}"></p>
 <p>This image illistrates how the locally weighted regression is optimized with tau, or bandwidth. When tau is too large or too small, the regression is not fitting the data appropriately. Data validation and scatterplots can help us see if the value tau is not optinal (1). A larger tau will result in a smoother curve, however this is not always desired. To address this, different values for tau, along with different kernels which alter the shape of the curve.</p>
 <h1 id="kernal-selection">Kernal Selection</h1>
@@ -24,7 +23,7 @@
 <li>The Tricubic Kernel</li>
 </ol>
 <p>$$ K(x):=\begin{cases}
-  (1-|x|^3)^3&amp;if&amp;|x|&lt;1 \
+  (1-|x|^3)^3&amp;if&amp;|x|&lt;1\\
 0 &amp; \text{otherwise}
 \end{cases}
 $$</p>
