@@ -1,0 +1,282 @@
+<p>{
+  &quot;nbformat&quot;: 4,
+  &quot;nbformat_minor&quot;: 0,
+  &quot;metadata&quot;: {
+    &quot;colab&quot;: {
+      &quot;provenance&quot;: [],
+      &quot;mount_file_id&quot;: &quot;1zk5t1q5obaEGzV96-VjZufjtuhEnaYdf&quot;,
+      &quot;authorship_tag&quot;: &quot;ABX9TyP3fiydN5EKxvLutisdND55&quot;,
+      &quot;include_colab_link&quot;: true
+    },
+    &quot;kernelspec&quot;: {
+      &quot;name&quot;: &quot;python3&quot;,
+      &quot;display_name&quot;: &quot;Python 3&quot;
+    },
+    &quot;language_info&quot;: {
+      &quot;name&quot;: &quot;python&quot;
+    },
+    &quot;accelerator&quot;: &quot;GPU&quot;,
+    &quot;gpuClass&quot;: &quot;premium&quot;
+  },
+  &quot;cells&quot;: <a href="https://colab.research.google.com/drive/1zk5t1q5obaEGzV96-VjZufjtuhEnaYdf?usp=sharing">
+    {
+      &quot;cell_type&quot;: &quot;markdown&quot;,
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;view-in-github&quot;,
+        &quot;colab_type&quot;: &quot;text&quot;
+      },
+      &quot;source&quot;: [
+        &quot;<a href=\"https://colab.research.google.com/github/edubin/DATA441-01/blob/main/Project2.ipynb\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>&quot;
+      ]
+    },
+    {
+      &quot;cell_type&quot;: &quot;markdown&quot;,
+      &quot;source&quot;: [
+        &quot;[<img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab"></a>&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;Dj9Dl5-44wpx&quot;
+      }
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;import pandas as pd\n&quot;,
+        &quot;from sklearn.model_selection import train_test_split as tts, KFold, GridSearchCV\n&quot;,
+        &quot;from sklearn.preprocessing import StandardScaler\n&quot;,
+        &quot;from scipy.interpolate import interp1d, griddata, LinearNDInterpolator, NearestNDInterpolator\n&quot;,
+        &quot;from sklearn.ensemble import RandomForestRegressor\n&quot;,
+        &quot;from sklearn.metrics import mean_squared_error as mse\n&quot;,
+        &quot;from math import ceil\n&quot;,
+        &quot;import numpy as np\n&quot;,
+        &quot;from scipy import linalg&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;6RIMmYJ_P8Uj&quot;
+      },
+      &quot;execution_count&quot;: 1,
+      &quot;outputs&quot;: []
+    },
+    {
+      &quot;cell_type&quot;: &quot;markdown&quot;,
+      &quot;source&quot;: [
+        &quot;## Question 1: Lowess Function\n&quot;,
+        &quot;\n&quot;,
+        &quot;Adapt and modify the code for Gramfort’s version of Lowess to accommodate train and test sets with multidimensional features.&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;sPg3KXlA2IBF&quot;
+      }
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;execution_count&quot;: 2,
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;QQLZKYtkPr7D&quot;
+      },
+      &quot;outputs&quot;: [],
+      &quot;source&quot;: [
+        &quot;def lowess(x, y, xnew, f=2/3, iter=3, intercept=True):\n&quot;,
+        &quot;    n = len(x)\n&quot;,
+        &quot;    r = int(ceil(f <em> n))\n&quot;,
+        &quot;\n&quot;,
+        &quot;    if len(y.shape)==1: \n&quot;,
+        &quot;      y = y.reshape(-1,1)\n&quot;,
+        &quot;    if len(x.shape)==1:\n&quot;,
+        &quot;      x = x.reshape(-1,1)\n&quot;,
+        &quot;    if intercept:\n&quot;,
+        &quot;      x1 = np.column_stack([np.ones((len(x),1)),x])\n&quot;,
+        &quot;    else:\n&quot;,
+        &quot;      x1 = x\n&quot;,
+        &quot;\n&quot;,
+        &quot;    h = [np.sort(np.sqrt(np.sum((x-x[i])<strong>2,axis=1)))[r] for i in range(n)]\n&quot;,
+        &quot;    d = np.array([np.sqrt(np.sum((x-x[i])</strong>2,axis=1)) for i in range(len(x))])\n&quot;,
+        &quot;    w = np.clip(d/h, 0.0, 1.0)\n&quot;,
+        &quot;    w = (1 - w <strong> 3) </strong> 3\n&quot;,
+        &quot;    yest = np.zeros(n)\n&quot;,
+        &quot;    delta = np.ones(n)\n&quot;,
+        &quot;    \n&quot;,
+        &quot;    for iteration in range(iter):\n&quot;,
+        &quot;        for i in range(n):\n&quot;,
+        &quot;            weights = np.diag(w[:,i])\n&quot;,
+        &quot;            b = np.transpose(x1).dot(weights).dot(y)\n&quot;,
+        &quot;            A = np.transpose(x1).dot(weights).dot(x1) +  0.0001</em>np.eye(x1.shape[1])\n&quot;,
+        &quot;            beta = linalg.solve(A, b)\n&quot;,
+        &quot;            yest[i] = np.dot(x1[i],beta)\n&quot;,
+        &quot;\n&quot;,
+        &quot;        residuals = y - yest\n&quot;,
+        &quot;        s = np.median(np.abs(residuals))\n&quot;,
+        &quot;        delta = np.clip(residuals / (6.0 <em> s), -1, 1)\n&quot;,
+        &quot;        delta = (1 - delta <em>* 2) </em></em> 2\n&quot;,
+        &quot;\n&quot;,
+        &quot;    if x.shape[1]==1:\n&quot;,
+        &quot;      f = interp1d(x.flatten(),yest,fill_value=&#39;extrapolate&#39;)\n&quot;,
+        &quot;    else:\n&quot;,
+        &quot;      f = LinearNDInterpolator(x, yest)\n&quot;,
+        &quot;    output = f(xnew) \n&quot;,
+        &quot;    if sum(np.isnan(output))&gt;0:\n&quot;,
+        &quot;      g = NearestNDInterpolator(x,y.ravel()) \n&quot;,
+        &quot;      output[np.isnan(output)] = g(xnew[np.isnan(output)])\n&quot;,
+        &quot;    return output&quot;
+      ]
+    },
+    {
+      &quot;cell_type&quot;: &quot;markdown&quot;,
+      &quot;source&quot;: [
+        &quot;## Question #2: KFold Cross-Valudation &amp; Real Data\n&quot;,
+        &quot;\n&quot;,
+        &quot;Test your new function from 1) on some real data sets with k-Fold cross-validations.&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;JDTtKaWN2VJz&quot;
+      }
+    },
+    {
+      &quot;cell_type&quot;: &quot;markdown&quot;,
+      &quot;source&quot;: [
+        &quot;###Data Set #1 - Cars Data&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;6eKu74Xc2eHo&quot;
+      }
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;data = pd.read_csv(&#39;drive/MyDrive/Advanced Applied Machine Learning/data/cars.csv&#39;)&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;_9iC1J9<em>PuE</em>&quot;
+      },
+      &quot;execution_count&quot;: 3,
+      &quot;outputs&quot;: []
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;x = data.loc[:,&#39;CYL&#39;:&#39;WGT&#39;].values\n&quot;,
+        &quot;y = data[&#39;MPG&#39;].values&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;lv_P9QUfP6sG&quot;
+      },
+      &quot;execution_count&quot;: 4,
+      &quot;outputs&quot;: []
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;scale = StandardScaler()&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;zzERcnqbTPkL&quot;
+      },
+      &quot;execution_count&quot;: 5,
+      &quot;outputs&quot;: []
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;mse_lwr = []\n&quot;,
+        &quot;kf = KFold(n_splits=10,shuffle=True,random_state=1234)\n&quot;,
+        &quot;\n&quot;,
+        &quot;for idxtrain, idxtest in kf.split(x):\n&quot;,
+        &quot;  xtrain = x[idxtrain]\n&quot;,
+        &quot;  ytrain = y[idxtrain]\n&quot;,
+        &quot;  ytest = y[idxtest]\n&quot;,
+        &quot;  xtest = x[idxtest]\n&quot;,
+        &quot;  xtrain = scale.fit_transform(xtrain)\n&quot;,
+        &quot;  xtest = scale.transform(xtest)\n&quot;,
+        &quot;  yhat_lw = lowess(xtrain, ytrain, xtest, f=1/3,iter=1,intercept=True)\n&quot;,
+        &quot; \n&quot;,
+        &quot;  mse_lwr.append(mse(ytest,yhat_lw))\n&quot;,
+        &quot;print(&#39;The Cross-validated Mean Squared Error for Locally Weighted Regression is : &#39;+str(np.mean(mse_lwr)))&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;colab&quot;: {
+          &quot;base_uri&quot;: &quot;<a href="https://localhost:8080/">https://localhost:8080/</a>&quot;
+        },
+        &quot;id&quot;: &quot;kNfRsesguCQf&quot;,
+        &quot;outputId&quot;: &quot;12903f94-7aec-4f9d-8c94-3a7f023b9613&quot;
+      },
+      &quot;execution_count&quot;: 6,
+      &quot;outputs&quot;: [
+        {
+          &quot;output_type&quot;: &quot;stream&quot;,
+          &quot;name&quot;: &quot;stdout&quot;,
+          &quot;text&quot;: [
+            &quot;The Cross-validated Mean Squared Error for Locally Weighted Regression is : 16.838450874085616\n&quot;
+          ]
+        }
+      ]
+    },
+    {
+      &quot;cell_type&quot;: &quot;markdown&quot;,
+      &quot;source&quot;: [
+        &quot;### Data Set #2 - Concrete Data&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;JJvBnIil2tFM&quot;
+      }
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;data = pd.read_csv(&#39;drive/MyDrive/Advanced Applied Machine Learning/data/concrete.csv&#39;)&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;ZWQ45Nj503hq&quot;
+      },
+      &quot;execution_count&quot;: 7,
+      &quot;outputs&quot;: []
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;x = data.loc[:,&#39;cement&#39;:&#39;coarseagg&#39;].values\n&quot;,
+        &quot;y = data[&#39;strength&#39;].values&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;ypNbKAhJ1GdQ&quot;
+      },
+      &quot;execution_count&quot;: 8,
+      &quot;outputs&quot;: []
+    },
+    {
+      &quot;cell_type&quot;: &quot;code&quot;,
+      &quot;source&quot;: [
+        &quot;mse_lwr = []\n&quot;,
+        &quot;kf = KFold(n_splits=2,shuffle=True,random_state=1234)\n&quot;,
+        &quot;\n&quot;,
+        &quot;for idxtrain, idxtest in kf.split(x):\n&quot;,
+        &quot;  xtrain = x[idxtrain]\n&quot;,
+        &quot;  ytrain = y[idxtrain]\n&quot;,
+        &quot;  ytest = y[idxtest]\n&quot;,
+        &quot;  xtest = x[idxtest]\n&quot;,
+        &quot;  xtrain = scale.fit_transform(xtrain)\n&quot;,
+        &quot;  xtest = scale.transform(xtest)\n&quot;,
+        &quot;  yhat_lw = lowess(xtrain, ytrain, xtest, f=2/3,iter=1,intercept=True)\n&quot;,
+        &quot; \n&quot;,
+        &quot;  mse_lwr.append(mse(ytest,yhat_lw))\n&quot;,
+        &quot;print(&#39;The Cross-validated Mean Squared Error for Locally Weighted Regression is : &#39;+str(np.mean(mse_lwr)))&quot;
+      ],
+      &quot;metadata&quot;: {
+        &quot;id&quot;: &quot;qT05cgQd2FHo&quot;,
+        &quot;colab&quot;: {
+          &quot;base_uri&quot;: &quot;<a href="https://localhost:8080/">https://localhost:8080/</a>&quot;
+        },
+        &quot;outputId&quot;: &quot;204a82d2-f931-464a-c726-0472948f94cc&quot;
+      },
+      &quot;execution_count&quot;: 9,
+      &quot;outputs&quot;: [
+        {
+          &quot;output_type&quot;: &quot;stream&quot;,
+          &quot;name&quot;: &quot;stdout&quot;,
+          &quot;text&quot;: [
+            &quot;The Cross-validated Mean Squared Error for Locally Weighted Regression is : 143.91236310732862\n&quot;
+          ]
+        }
+      ]
+    }
+  ]
+}</p>
