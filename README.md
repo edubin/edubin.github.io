@@ -1,4 +1,4 @@
-# Emma Dubin - Advanced Applied Machiene Learning Repository
+# Emma Dubin - Advanced Applied Machine Learning Repository
 
 # Table of Contents:
 
