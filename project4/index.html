@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scraping the Google Cloud partner directory — Emma Dubin</title>
+<meta name="description" content="A Selenium scraper against a paginated, JavaScript-rendered directory with no API — 10,824 partner records parsed into eight structured fields.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F1F1EC;
+  --panel:#FFFFFF;
+  --ink:#15181B;
+  --muted:#5A6169;
+  --rule:#DCDCD4;
+  --accent:#1E36BE;
+  --code-bg:#0E1116;
+  --code-ink:#D7DEE8;
+  --code-key:#7B9CFF;
+  --code-com:#6F7B8A;
+  --code-num:#E8A94A;
+  --code-str:#9BD48F;
+
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --gut:clamp(20px,5vw,72px);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:18px;line-height:1.68;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent)}
+::selection{background:var(--code-key);color:#0E1116}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
+.col{max-width:660px}
+
+.masthead{border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(8px)}
+.masthead .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding-top:14px;padding-bottom:14px}
+.wordmark{font-family:var(--display);font-weight:800;letter-spacing:-.03em;font-size:19px;
+  text-decoration:none;color:var(--ink)}
+.wordmark span{color:var(--muted);font-weight:400}
+.back{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;color:var(--muted)}
+.back:hover{color:var(--ink)}
+
+.head{padding:clamp(40px,6vw,76px) 0 clamp(28px,4vw,44px)}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,4.6vw,50px);line-height:1.04;
+  letter-spacing:-.035em;margin:0 0 20px;max-width:16ch;text-wrap:balance}
+.standfirst{font-size:clamp(18px,1.6vw,20px);color:#2C3238;margin:0;max-width:52ch}
+
+.meta{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--rule);
+  border-bottom:1px solid var(--rule);margin-top:36px}
+.meta div{padding:16px 28px 16px 0;margin-right:28px}
+.meta dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 5px}
+.meta dd{margin:0;font-size:15.5px}
+
+article{padding:clamp(32px,5vw,56px) 0 0}
+h2{font-family:var(--display);font-weight:600;font-size:clamp(22px,2.6vw,28px);
+  letter-spacing:-.025em;margin:52px 0 16px;max-width:24ch}
+h2:first-child{margin-top:0}
+h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.015em;
+  margin:34px 0 12px}
+p{margin:0 0 20px}
+p code,li code,td code{font-family:var(--mono);font-size:.86em;background:#E4E4DC;padding:1px 5px;
+  border-radius:2px;white-space:nowrap}
+strong{font-weight:600}
+ul.notes{padding-left:20px;margin:0 0 22px}
+ul.notes li{margin-bottom:10px}
+
+figure{margin:0 0 28px}
+pre{background:var(--code-bg);color:var(--code-ink);font-family:var(--mono);font-size:13px;
+  line-height:1.65;padding:20px 22px;overflow-x:auto;margin:0;border:1px solid #23282F}
+pre .k{color:var(--code-key)}
+pre .c{color:var(--code-com)}
+pre .n{color:var(--code-num)}
+pre .s{color:var(--code-str)}
+figcaption{font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--muted);
+  padding-top:9px;border-bottom:1px solid var(--rule);padding-bottom:12px}
+
+table{border-collapse:collapse;width:100%;margin:0 0 12px;font-size:15.5px}
+th,td{text-align:left;padding:11px 14px 11px 0;border-bottom:1px solid var(--rule);
+  vertical-align:top}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);font-weight:500}
+
+.callout{border-left:2px solid var(--accent);padding:4px 0 4px 22px;margin:0 0 24px}
+.callout p:last-child{margin-bottom:0}
+
+.stat{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+  padding:24px 0;margin:0 0 28px;display:flex;gap:clamp(28px,5vw,56px);flex-wrap:wrap}
+.stat div{min-width:120px}
+.stat dt{font-family:var(--display);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(26px,3.2vw,34px);line-height:1;margin:0 0 6px}
+.stat dd{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+
+footer{border-top:1px solid var(--rule);margin-top:clamp(48px,6vw,80px);
+  padding:clamp(32px,4vw,52px) 0 clamp(48px,6vw,72px)}
+.footlinks{display:flex;flex-wrap:wrap;gap:12px 28px}
+.footlinks a{font-family:var(--display);font-weight:600;letter-spacing:-.02em;font-size:20px;
+  text-decoration:none;color:var(--ink);border-bottom:2px solid var(--rule)}
+.footlinks a:hover{color:var(--accent);border-bottom-color:var(--accent)}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="wordmark" href="/">Emma Dubin <span>/ Data Science</span></a>
+    <a class="back" href="/#projects">← All work</a>
+  </div>
+</header>
+
+<div class="head wrap">
+  <div class="col">
+    <p class="eyebrow">Project 03 · Data collection</p>
+    <h1>Scraping a directory that doesn't want to be scraped</h1>
+    <p class="standfirst">
+      The Google Cloud partner directory has no API, loads its content with JavaScript,
+      paginates behind a button, and gives every partner a different set of sections.
+      Getting all of it into a table is less about scraping than about handling structure
+      that changes row to row.
+    </p>
+  </div>
+  <dl class="meta">
+    <div><dt>Tools</dt><dd>Selenium · pandas · openpyxl</dd></div>
+    <div><dt>Source</dt><dd>cloud.google.com/find-a-partner</dd></div>
+    <div><dt>Output</dt><dd>8-field structured table</dd></div>
+  </dl>
+</div>
+
+<article class="wrap">
+  <div class="col">
+
+    <h2>The problem</h2>
+    <p>
+      Google Cloud publishes a directory of consulting partners — who they are, what they
+      specialize in, which products they can advise on, where they operate. It is genuinely
+      useful competitive intelligence, and it is available only as a web page: no API, no
+      export, no downloadable dataset.
+    </p>
+    <p>
+      Three things make it awkward to extract:
+    </p>
+    <ul class="notes">
+      <li>The listing is rendered client-side, so fetching the HTML with <code>requests</code> returns a near-empty shell. The page has to be driven by a real browser.</li>
+      <li>Only a slice of partners loads initially. The rest sit behind a <em>load more</em> button that must be clicked repeatedly until it stops appearing.</li>
+      <li><strong>Every partner card has a different shape.</strong> One has specializations, expertises, and products; the next has only products and a location. The sections that exist are the only ones rendered, so nothing sits at a fixed position.</li>
+    </ul>
+
+    <dl class="stat">
+      <div><dt>10,824</dt><dd>Partner records</dd></div>
+      <div><dt>8</dt><dd>Fields per partner</dd></div>
+      <div><dt>0</dt><dd>Available APIs</dd></div>
+    </dl>
+
+    <h2>Exhausting the pagination</h2>
+    <p>
+      The first job is getting the whole catalogue onto the page. The loop below clicks
+      <em>load more</em> until the button no longer appears — which is how the page signals
+      the end, since there is no page count to read. Both exits are expected outcomes, not
+      errors: <code>NoSuchElementException</code> means the button is gone,
+      <code>TimeoutException</code> means nothing new arrived in time.
+    </p>
+    <p>
+      The <code>sleep</code> after each click matters. Without it the loop fires requests at
+      whatever rate Selenium can manage, which is both hostile to the host and a good way to
+      get rate-limited mid-run. Polite scraping is also more reliable scraping.
+    </p>
+
+<figure>
+<pre><span class="k">def</span> scroll_down(driver, pause=<span class="n">1.5</span>):
+    <span class="s">"""Click 'load more' until the button stops appearing."""</span>
+    load_more = (By.XPATH, <span class="s">"//*[@id='maincontent']//app-search-results/div[2]/button"</span>)
+
+    <span class="k">while</span> <span class="k">True</span>:
+        <span class="k">try</span>:
+            button = WebDriverWait(driver, <span class="n">3</span>).until(
+                EC.element_to_be_clickable(load_more)
+            )
+            driver.execute_script(<span class="s">"arguments[0].click();"</span>, button)
+            time.sleep(pause)          <span class="c"># don't hammer the host</span>
+        <span class="k">except</span> NoSuchElementException:
+            <span class="k">break</span>                      <span class="c"># button gone — everything is loaded</span>
+        <span class="k">except</span> TimeoutException:
+            <span class="k">break</span>                      <span class="c"># nothing new arrived — same conclusion</span></pre>
+<figcaption>Pagination loop, with a deliberate pause between clicks.</figcaption>
+</figure>
+
+    <h2>Parsing cards that don't agree on their own structure</h2>
+    <p>
+      This is the actual problem. Within a partner card, each section is a
+      <code>div</code> — but only the sections that partner <em>has</em>. You cannot say
+      "expertises live in <code>div[3]</code>", because for a partner with no
+      specializations, <code>div[3]</code> is something else entirely.
+    </p>
+    <p>
+      The fix is to walk the divs with a counter, read each section's heading, and only
+      consume the div if the heading matches what you are looking for. If it does not, the
+      field is recorded as missing and the counter stays put — so the next field gets a
+      chance at the same div.
+    </p>
+
+<figure>
+<pre><span class="k">def</span> read_section(card, index, expected_heading):
+    <span class="s">"""Return (values, next_index). Consumes the div only on a heading match."""</span>
+    <span class="k">try</span>:
+        heading = card.find_element(By.XPATH, <span class="s">f"./div[{index}]/div/h3"</span>)
+    <span class="k">except</span> NoSuchElementException:
+        <span class="k">return</span> <span class="k">None</span>, index          <span class="c"># no section here at all</span>
+
+    <span class="k">if</span> heading.text != expected_heading:
+        <span class="k">return</span> <span class="k">None</span>, index          <span class="c"># a different section — leave it for the next field</span>
+
+    body = card.find_element(By.XPATH, <span class="s">f"./div[{index}]/div/div"</span>)
+    <span class="k">return</span> split_list(body.text), index + <span class="n">1</span></pre>
+<figcaption>Positional parsing guarded by a heading check.</figcaption>
+</figure>
+
+    <p>
+      The list-splitting is its own small mess. Google renders these as prose — "Retail,
+      Healthcare and Financial Services" — so turning them into clean lists means handling
+      the comma, the trailing <em>and</em>, and the Oxford-comma variant together.
+    </p>
+
+<figure>
+<pre><span class="k">def</span> split_list(text):
+    <span class="s">"""'A, B and C' and 'A, B, and C' both become ['A', 'B', 'C']."""</span>
+    <span class="k">return</span> [
+        part.strip()
+        <span class="k">for</span> part <span class="k">in</span> text.replace(<span class="s">", and "</span>, <span class="s">","</span>)
+                        .replace(<span class="s">" and "</span>, <span class="s">","</span>)
+                        .replace(<span class="s">", "</span>, <span class="s">","</span>)
+                        .split(<span class="s">","</span>)
+        <span class="k">if</span> part.strip()
+    ]</pre>
+<figcaption>Normalizing prose lists into arrays.</figcaption>
+</figure>
+
+    <h2>Assembling the table</h2>
+    <p>
+      With the section reader in place, each card is read field by field in document order,
+      the counter threading through so every field sees the right div. Anything absent comes
+      back as <code>None</code> rather than shifting the remaining fields out of alignment —
+      which is the failure mode that quietly corrupts a scrape and is nearly invisible in
+      the output.
+    </p>
+
+<figure>
+<pre>rows = []
+
+<span class="k">for</span> card <span class="k">in</span> driver.find_elements(By.CSS_SELECTOR, <span class="s">"mat-card-content"</span>):
+    i = <span class="n">1</span>
+    row = {}
+
+    <span class="k">try</span>:
+        row[<span class="s">"Partner Information"</span>] = card.find_element(By.CSS_SELECTOR, <span class="s">"p"</span>).text
+    <span class="k">except</span> NoSuchElementException:
+        row[<span class="s">"Partner Information"</span>] = <span class="k">None</span>
+
+    <span class="k">for</span> field, heading <span class="k">in</span> [
+        (<span class="s">"Specializations"</span>,  <span class="s">"Specializations"</span>),
+        (<span class="s">"Expertises"</span>,       <span class="s">"Expertises"</span>),
+        (<span class="s">"Premier Partner"</span>,  <span class="s">"Premier Partner"</span>),
+        (<span class="s">"Initiatives"</span>,      <span class="s">"Initiatives"</span>),
+        (<span class="s">"Products"</span>,         <span class="s">"Products"</span>),
+    ]:
+        row[field], i = read_section(card, i, heading)
+
+    <span class="k">try</span>:                          <span class="c"># location is whatever div is left</span>
+        row[<span class="s">"Partner Location"</span>] = split_list(
+            card.find_element(By.XPATH, <span class="s">f"./div[{i}]/div"</span>).text
+        )
+    <span class="k">except</span> NoSuchElementException:
+        row[<span class="s">"Partner Location"</span>] = <span class="k">None</span>
+
+    rows.append(row)
+
+df = pd.DataFrame(rows, columns=[
+    <span class="s">"Partner Name"</span>, <span class="s">"Partner Location"</span>, <span class="s">"Partner Information"</span>, <span class="s">"Specializations"</span>,
+    <span class="s">"Expertises"</span>, <span class="s">"Premier Partner"</span>, <span class="s">"Initiatives"</span>, <span class="s">"Products"</span>,
+])
+df.to_excel(<span class="s">"partners.xlsx"</span>, index=<span class="k">False</span>)</pre>
+<figcaption>Field-by-field extraction with a threaded position counter.</figcaption>
+</figure>
+
+    <h2>What the output looks like</h2>
+    <table>
+      <thead>
+        <tr><th>Field</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Partner Name</td><td>Quantiphi Inc.</td></tr>
+        <tr><td>Partner Location</td><td>United States, India, Canada, United Kingdom, …</td></tr>
+        <tr><td>Specializations</td><td>Marketing Analytics, Data Analytics, Infrastructure</td></tr>
+        <tr><td>Expertises</td><td>Modernize Legacy Applications, Telecommunications</td></tr>
+        <tr><td>Premier Partner</td><td>Google Cloud Platform — Sell, Service</td></tr>
+        <tr><td>Initiatives</td><td>Generative AI Initiative for Service Partners</td></tr>
+      </tbody>
+    </table>
+    <p>
+      10,824 rows across eight fields. Location is the sparsest column — plenty of partners
+      simply do not publish one, which is a genuine gap in the source rather than a parsing
+      failure, and worth stating plainly before anyone builds a geographic analysis on top
+      of it.
+    </p>
+
+    <h2>What I would do differently</h2>
+    <div class="callout">
+      <p>
+        The positional walk works, but it is coupled to Google's DOM: a layout change
+        reorders the divs and the parse silently drifts. A more durable version would find
+        each section by its heading text directly rather than by index, so the code stops
+        caring what order the sections appear in.
+      </p>
+      <p>
+        I would also add a row-count assertion against the directory's own displayed total,
+        and log any card where every field came back empty. A scrape that fails loudly is
+        worth far more than one that returns a plausible-looking table with a quarter of the
+        values missing.
+      </p>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="footlinks">
+      <a href="/">← Back to all work</a>
+      <a href="/project2/">Project 2: Multivariate LOWESS</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
