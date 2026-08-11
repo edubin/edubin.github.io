@@ -315,16 +315,18 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
         <a class="card-link" href="/project1/">Read the write-up →</a>
       </article>
 
-      <!-- EDIT: replace with a real second project -->
-      <article class="card">
-        <h3>PROJECT TITLE HERE</h3>
+     <article class="card">
+        <h3>Multivariate locally weighted regression</h3>
         <p>
-          Two or three sentences: what question you asked, what data you used, what method
-          you chose and why, and what the result actually said. Skip adjectives — name the
-          model, the metric, and the number.
+          Project 1, generalized: LOWESS extended to multiple features and to
+          prediction on unseen data. Euclidean distance across the feature space,
+          an adaptive bandwidth set by each point's k-th nearest neighbour, ridge
+          regularization to keep the local system solvable, and ND interpolation
+          with a nearest-neighbour fallback outside the convex hull. Cross-validated
+          MSE of 16.8 on cars (MPG) and 143.9 on concrete (compressive strength).
         </p>
         <ul class="tags">
-          <li>TOOL</li><li>METHOD</li><li>DOMAIN</li>
+          <li>NumPy</li><li>SciPy</li><li>k-fold CV</li><li>Regularization</li>
         </ul>
         <a class="card-link" href="/project2/">Read the write-up →</a>
       </article>
