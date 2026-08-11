@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Emma Dubin — Data Science</title>
+<meta name="description" content="Emma Dubin — Data Science and Finance, Cybersecurity at KPMG. Projects, models, and write-ups.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#F1F1EC;
+  --panel:#FFFFFF;
+  --ink:#15181B;
+  --muted:#5A6169;
+  --rule:#DCDCD4;
+  --accent:#1E36BE;
+
+
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Source Serif 4",Georgia,serif;
+  --mono:"IBM Plex Mono",ui-monospace,monospace;
+
+  --gut:clamp(28px,6vw,96px);
+  --max:1120px;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+::selection{background:#C9D6FF;color:#0E1116}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- masthead ---------- */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--paper) 88%,transparent);
+  backdrop-filter:blur(8px);
+}
+.masthead .wrap{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:24px;padding-top:14px;padding-bottom:14px;
+}
+.wordmark{
+  font-family:var(--display);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(16px,1.6vw,19px);text-decoration:none;white-space:nowrap;flex-shrink:0;
+}
+.wordmark span{color:var(--muted);font-weight:400}
+@media(max-width:1000px){.wordmark span{display:none}}
+.nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px 18px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
+.nav a{text-decoration:none;color:var(--muted);padding:3px 0;white-space:nowrap;
+  border-bottom:1px solid transparent}
+.nav a:hover,.nav a:focus-visible{color:var(--ink);border-bottom-color:var(--accent)}
+@media(max-width:1040px){.nav{gap:6px 14px;font-size:11px;letter-spacing:.03em}}
+@media(max-width:860px){.nav{gap:5px 12px;font-size:10.5px;letter-spacing:.02em}}
+@media(max-width:600px){
+  .nav{gap:5px 10px;font-size:10px}
+  .nav a[href="#practice"]{display:none}
+}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(44px,7vw,88px) 0 clamp(36px,5vw,60px)}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:clamp(32px,6vw,80px);align-items:start;
+}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
+
+.eyebrow{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 20px;display:flex;align-items:center;gap:10px;
+}
+.eyebrow::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+h1{
+  font-family:var(--display);font-weight:800;
+  font-size:clamp(36px,5.4vw,62px);line-height:1.0;letter-spacing:-.038em;
+  margin:0 0 24px;text-wrap:balance;max-width:15ch;
+}
+h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:clamp(17px,1.5vw,19.5px);color:#2C3238;margin:0 0 22px;max-width:50ch}
+.lede strong{font-weight:600}
+
+.quickfacts{
+  list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px;
+  font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;
+}
+.quickfacts li{border:1px solid var(--rule);background:var(--panel);padding:6px 10px;color:var(--muted)}
+
+/* ---------- credential block ---------- */
+.creds{border:1px solid var(--rule);background:var(--panel)}
+.creds-head{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);padding:14px 20px 12px;border-bottom:1px solid var(--rule);
+}
+.creds dl{margin:0}
+.creds .row{padding:20px;border-bottom:1px solid var(--rule)}
+.creds .row:last-child{border-bottom:none}
+.creds dt{
+  font-family:var(--display);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(26px,3.2vw,34px);line-height:1;margin:0 0 8px;
+}
+.creds dd{margin:0;font-size:14.5px;color:var(--muted);line-height:1.5}
+.creds dd b{color:var(--ink);font-weight:600}
+
+/* ---------- sections ---------- */
+section{padding:clamp(44px,6vw,76px) 0;border-top:1px solid var(--rule)}
+.sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:32px}
+.sec-head h2{
+  font-family:var(--display);font-weight:600;letter-spacing:-.025em;
+  font-size:clamp(24px,3vw,32px);margin:0;
+}
+.sec-head p{margin:0;color:var(--muted);font-size:15px;max-width:42ch}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.card{background:var(--panel);padding:24px 22px 26px;display:flex;flex-direction:column;gap:12px}
+.card h3{font-family:var(--display);font-weight:600;font-size:20px;letter-spacing:-.02em;margin:0}
+.card p{margin:0;font-size:15.5px;color:#333A41}
+.tags{list-style:none;display:flex;flex-wrap:wrap;gap:6px;margin:auto 0 0;padding:14px 0 0}
+.tags li{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--muted);border:1px solid var(--rule);padding:4px 7px}
+.card-link{
+  font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--accent);
+  text-decoration:none;border-bottom:1px solid currentColor;align-self:flex-start;
+}
+.card-link:hover{color:var(--ink)}
+
+/* ---------- other sections ---------- */
+.practice{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(24px,3vw,44px)}
+.practice h3{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;font-weight:500}
+.practice p{margin:0;font-size:16px}
+
+.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:28px}
+.stack h3{font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:500}
+.stack ul{list-style:none;margin:0;padding:0}
+.stack li{padding:6px 0;border-bottom:1px solid var(--rule);font-size:15.5px}
+
+.interests{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.interests li{border:1px solid var(--rule);background:var(--panel);padding:9px 14px;
+  font-size:15px;color:#333A41}
+.interests li b{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);
+  font-weight:400;margin-left:7px}
+
+.about{display:grid;grid-template-columns:1.3fr 1fr;gap:clamp(28px,5vw,64px)}
+@media(max-width:800px){.about{grid-template-columns:1fr}}
+.about p{margin:0 0 16px;font-size:17px}
+.cv{list-style:none;margin:0;padding:0}
+.cv li{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:12px 0;border-top:1px solid var(--rule)}
+.cv time{font-family:var(--mono);font-size:11.5px;color:var(--muted);padding-top:4px;white-space:nowrap}
+.cv b{font-family:var(--display);font-weight:600;font-size:16px;display:block}
+.cv small{color:var(--muted);font-size:14px}
+.cv .cv-group{display:block;padding:26px 0 8px;border-top:none}
+.cv li.cv-group:first-child{padding-top:0}
+.cv .cv-group span{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted)}
+.cv .cv-note{display:block;padding:2px 0 14px;border-top:none}
+.cv .cv-note p{margin:0;font-size:15px;color:#333A41;max-width:46ch}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
+.contact{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:baseline}
+.contact a{
+  font-family:var(--display);font-weight:600;letter-spacing:-.02em;
+  font-size:clamp(20px,2.6vw,28px);text-decoration:none;border-bottom:2px solid var(--rule);
+}
+.contact a:hover{border-bottom-color:var(--accent);color:var(--accent)}
+.colophon{margin-top:36px;font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="wordmark" href="/">Emma Dubin <span>/ Data Science</span></a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#projects">Projects</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#about">Experience</a>
+      <a href="#practice">Practice</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<div class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <p class="eyebrow">New York, NY</p>
+      <h1>Resumes are boring. Doomscroll this instead.</h1>
+      <p class="lede">
+        I studied data science and finance at William &amp; Mary, and I spend my days as a
+        Senior Associate in cybersecurity at KPMG — a role that by design covers a lot of
+        ground and describes almost none of it. So rather than walk you through everything
+        I have ever done, let me just show you a few things I can do.
+      </p>
+      <ul class="quickfacts">
+        <li>Python · SQL</li>
+        <li>Snowflake · Databricks · AWS</li>
+        <li>B.S. Data Science &amp; Finance</li>
+      </ul>
+    </div>
+
+    <div class="creds">
+      <p class="creds-head">Credentials</p>
+      <dl>
+        <div class="row">
+          <dt>Summa Cum Laude</dt>
+          <dd><b>The College of William &amp; Mary</b><br>B.S., double major in Data Science and Finance</dd>
+        </div>
+        <div class="row">
+          <dt>3.5 years</dt>
+          <dd>Professional work experience, <b>Data Analytics &amp; Cybersecurity</b></dd>
+        </div>
+        <div class="row">
+          <dt>&lt; 18 months</dt>
+          <dd>From Associate to <b>Senior Associate</b> at KPMG — a full year ahead of the
+          standard timeline, and the only early promotion in a start class of 50+. Not a new
+          pattern: three promotions at a supermarket got there first.</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</div>
+
+<!-- ============ TECHNICAL PROJECTS ============ -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Technical projects</h2>
+      <p>Write-ups and repos both. Building the thing is half of it; the other half is
+      making it make sense to someone who will never read the code.</p>
+    </div>
+
+    <div class="cards">
+
+      <article class="card">
+        <h3>Scraping the Google Cloud partner directory</h3>
+        <p>
+          A Selenium scraper against a paginated, JavaScript-rendered directory with no API.
+          Clicks through "load more" until the catalogue is exhausted, then parses each
+          partner card into eight fields — specializations, expertises, products, locations —
+          where the markup varies by which sections a partner happens to have. 10,824 records
+          out, structured and ready for analysis.
+        </p>
+        <ul class="tags">
+          <li>Selenium</li><li>pandas</li><li>Web scraping</li><li>Dynamic pages</li>
+        </ul>
+        <a class="card-link" href="/project3/">Read the write-up →</a>
+      </article>
+
+      <article class="card">
+        <h3>Locally weighted regression from scratch</h3>
+        <p>
+          A nonparametric regression that fits a fresh weighted line around every point of
+          interest. Built four kernels (tricubic, Epanechnikov, quartic, exponential),
+          derived the weighted normal equations, and validated the estimator against a known
+          signal with a train–test split.
+        </p>
+        <ul class="tags">
+          <li>NumPy</li><li>SciPy</li><li>Kernel methods</li><li>Bandwidth tuning</li>
+        </ul>
+        <a class="card-link" href="/project1/">Read the write-up →</a>
+      </article>
+
+      <article class="card">
+        <h3>Multivariate locally weighted regression</h3>
+        <p>
+          Project 1, generalized: LOWESS extended to multiple features and to
+          prediction on unseen data. Euclidean distance across the feature space,
+          an adaptive bandwidth set by each point's k-th nearest neighbour, ridge
+          regularization to keep the local system solvable, and ND interpolation
+          with a nearest-neighbour fallback outside the convex hull. Cross-validated
+          MSE of 16.8 on cars (MPG) and 143.9 on concrete (compressive strength).
+        </p>
+        <ul class="tags">
+          <li>NumPy</li><li>SciPy</li><li>k-fold CV</li><li>Regularization</li>
+        </ul>
+        <a class="card-link" href="/project2/">Read the write-up →</a>
+      </article>
+
+      <article class="card">
+        <h3>Predicting education level from demographic data</h3>
+        <p>
+          48,219 individual records from the 2013 Liberia Demographic and Health
+          Survey. I compared logistic regression, k-NN, decision trees, and random
+          forests on the same train–test split, tuning each rather than accepting
+          defaults. Random forest won at 72.2% accuracy. Wealth was the strongest
+          single correlate of education (r = 0.26); household size was effectively
+          uncorrelated.
+        </p>
+        <ul class="tags">
+          <li>scikit-learn</li><li>Classification</li><li>Model comparison</li><li>Hyperparameter tuning</li>
+        </ul>
+        <a class="card-link" href="https://github.com/edubin/Analyzing-Liberian-Demographic-Data-">View on GitHub →</a>
+      </article>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============ TOOLKIT ============ -->
+<section id="toolkit">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Toolkit</h2>
+      <p>Listed by what I have shipped with, not what I have heard of.</p>
+    </div>
+
+    <div class="stack">
+      <div>
+        <h3>Languages</h3>
+        <ul>
+          <li>Python</li>
+          <li>SQL</li>
+          <li>R</li>
+          <li>Java</li>
+          <li>Go</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Data &amp; cloud</h3>
+        <ul>
+          <li>Snowflake</li>
+          <li>Databricks</li>
+          <li>AWS — Glue, Lambda, S3</li>
+          <li>GCP</li>
+          <li>SQL Server</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Visualization</h3>
+        <ul>
+          <li>Tableau</li>
+          <li>Sigma</li>
+          <li>Power BI</li>
+          <li>Matplotlib</li>
+          <li>Excel modelling</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Methods</h3>
+        <ul>
+          <li>Regression &amp; kernel methods</li>
+          <li>Model validation</li>
+          <li>ETL pipeline design</li>
+          <li>Data quality testing</li>
+          <li>LLM-assisted classification</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Libraries &amp; tools</h3>
+        <ul>
+          <li>NumPy · pandas</li>
+          <li>scikit-learn · SciPy</li>
+          <li>Git · Jupyter · VS Code</li>
+          <li>Jira · Confluence</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>About</h2>
+    </div>
+    <div class="about">
+      <div>
+        <p>
+          I am a Senior Associate in Cybersecurity &amp; Technology Risk Advisory at KPMG.
+          Most of my work is figuring out whether a control does what someone claims it does —
+          which, underneath the vocabulary, is an evidence problem.
+        </p>
+        <p>
+          Before that I was building ETL pipelines and dashboards in corporate finance, and
+          before that teaching data visualization. I signed my KPMG offer in October 2022,
+          during my senior year; the firm deferred my start by a year with a stipend, which
+          is the gap between graduating in 2023 and beginning at KPMG in 2024.
+        </p>
+        <p>
+          My training is in data science and finance, and it is where I want to spend the next
+          few years: product and consumer analytics, ideally somewhere close to the creator
+          economy. This site is where I keep the modelling work that my job description
+          does not cover.
+        </p>
+      </div>
+      <ul class="cv">
+        <li class="cv-group"><span>Work experience</span></li>
+        <li>
+          <time>2025 —</time>
+          <div><b>Senior Associate, KPMG</b><small>Cybersecurity &amp; Technology Risk Advisory</small></div>
+        </li>
+        <li>
+          <time>2024 – 2025</time>
+          <div><b>Associate, KPMG</b><small>Cybersecurity &amp; Technology Risk Advisory</small></div>
+        </li>
+        <li>
+          <time>2024</time>
+          <div><b>Data Analyst, Houlihan Lokey</b><small>Corporate Finance, Human Capital</small></div>
+        </li>
+        <li>
+          <time>2023</time>
+          <div><b>Teaching Assistant, Data Visualization</b><small>DATA 303, William &amp; Mary</small></div>
+        </li>
+        <li>
+          <time>2022</time>
+          <div><b>Consulting Intern, Baker Tilly</b><small>Risk Advisory &amp; Internal Audit</small></div>
+        </li>
+        <li>
+          <time>2021</time>
+          <div><b>Data Analytics Intern, Loop</b><small>Loop Auto Insurance · early-stage startup</small></div>
+        </li>
+        <li>
+          <time>2021</time>
+          <div><b>Project Manager, Data Science for Sustainable Development</b><small>Led a team of four on client data projects</small></div>
+        </li>
+        <li>
+          <time>2020 – 2021</time>
+          <div><b>Underwriting Intern, MedPro Group</b><small>Berkshire Hathaway</small></div>
+        </li>
+
+        <li class="cv-group"><span>Education</span></li>
+        <li>
+          <time>B.S. 2023</time>
+          <div><b>The College of William &amp; Mary</b><small>Data Science &amp; Finance · Summa Cum Laude · Dean's List, eight semesters</small></div>
+        </li>
+
+        <li class="cv-group"><span>Service industry</span></li>
+        <li class="cv-note">
+          <p>
+            Six years behind counters and bars, most of it alongside school. It taught me
+            things consulting assumes you already have: how to read a room full of very
+            different people, how to keep moving when six things land at once, how to take
+            criticism without flinching — and how to make a genuinely good drink.
+          </p>
+        </li>
+        <li>
+          <time>2023</time>
+          <div><b>Bartender, The Meeting House</b><small>Princeton, NJ</small></div>
+        </li>
+        <li>
+          <time>2023</time>
+          <div><b>Bartender, College Delly / Green Leafe Café</b><small>Williamsburg, VA</small></div>
+        </li>
+        <li>
+          <time>2022 – 2023</time>
+          <div><b>Server, Paul's Deli &amp; Neighborhood Restaurant</b><small>Williamsburg, VA</small></div>
+        </li>
+        <li>
+          <time>2017 – 2022</time>
+          <div><b>Front End Supervisor, McCaffrey's Supermarket</b><small>Promoted three times from Cashier · youngest closing bookkeeper in the store's history</small></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ IN PRACTICE ============ -->
+<section id="practice">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>In practice</h2>
+      <p>Where the analytical work shows up in consulting.</p>
+    </div>
+
+    <div class="practice">
+      <div>
+        <h3>Systems, quickly</h3>
+        <p>
+          Control testing means landing in an unfamiliar system every few weeks —
+          AWS, Snowflake, OneLake, Elastic, ServiceNow — and learning its data model
+          well enough to know what evidence actually proves a control works. The
+          systems change; the reasoning doesn't.
+        </p>
+      </div>
+      <div>
+        <h3>Pipelines that replace manual work</h3>
+        <p>
+          Python and SQL pipelines that ingest, validate, transform, and analyse quarterly
+          testing data across 24+ controls — work that used to be done by hand. I serve as the
+          Python and SQL subject matter expert for a 40-person engagement team.
+        </p>
+      </div>
+      <div>
+        <h3>Classification with LLMs</h3>
+        <p>
+          Built a custom Gemini Gem that reads control evidence and classifies it as
+          sufficient or insufficient against encryption policy requirements. It replaced a
+          slow, subjective review with a consistent one, and the team now uses it.
+        </p>
+      </div>
+      <div>
+        <h3>Dashboards and the people who use them</h3>
+        <p>
+          At Houlihan Lokey, ETL workflows moving 1M+ records out of Snowflake and SQL Server
+          into Python, feeding interactive Sigma dashboards. The harder half was upstream:
+          sitting with stakeholders to define what success actually meant before building
+          anything to measure it.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTERESTS ============ -->
+<section id="interests">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Outside of work</h2>
+      <p>What I spend the rest of my time on.</p>
+    </div>
+    <ul class="interests">
+      <li>Weightlifting <b>NASM CPT</b></li>
+      <li>Barry's Bootcamp</li>
+      <li>Concerts</li>
+      <li>Music</li>
+      <li>Travel</li>
+      <li>Nespresso</li>
+      <li>Philadelphia Eagles</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer id="contact">
+  <div class="wrap">
+    <p class="eyebrow">Open to new technical opportunities</p>
+    <div class="contact">
+      <a href="mailto:EMMACDUBIN@GMAIL.COM">Email</a>
+      <a href="https://www.linkedin.com/in/emmadubin">LinkedIn</a>
+      <a href="https://github.com/edubin">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
