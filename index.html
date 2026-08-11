@@ -329,18 +329,20 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
         <a class="card-link" href="/project2/">Read the write-up →</a>
       </article>
 
-      <!-- EDIT: replace with a real third project -->
       <article class="card">
-        <h3>PROJECT TITLE HERE</h3>
+        <h3>Predicting education level from demographic data</h3>
         <p>
-          A good third slot: something consumer-facing with a dataset people recognize —
-          streaming, marketplace, or creator-economy data — analysed end to end, from
-          messy pull to a stated recommendation.
+          48,219 individual records from the 2013 Liberia Demographic and Health
+          Survey. I compared logistic regression, k-NN, decision trees, and random
+          forests on the same train–test split, tuning each rather than accepting
+          defaults. Random forest won at 72.2% accuracy. Wealth was the strongest
+          single correlate of education (r = 0.26); household size was effectively
+          uncorrelated.
         </p>
         <ul class="tags">
-          <li>TOOL</li><li>METHOD</li><li>DOMAIN</li>
+          <li>scikit-learn</li><li>Classification</li><li>Model comparison</li><li>Hyperparameter tuning</li>
         </ul>
-        <a class="card-link" href="#">Read the write-up →</a>
+        <a class="card-link" href="https://github.com/edubin/Analyzing-Liberian-Demographic-Data-">View on GitHub →</a>
       </article>
 
     </div>
