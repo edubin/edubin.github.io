@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,9 +73,16 @@ a{color:inherit}
 /* ---------- hero ---------- */
 .hero{padding:clamp(44px,7vw,88px) 0 clamp(36px,5vw,60px)}
 .hero-grid{
-  display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
-  gap:clamp(32px,6vw,80px);align-items:start;
+  display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  gap:clamp(32px,5vw,64px);align-items:stretch;
 }
+.hero-copy{display:flex;flex-direction:column}
+.hero-id{display:flex;align-items:center;gap:clamp(18px,2.4vw,30px)}
+.hero-sub{font-family:var(--body);font-size:clamp(15px,1.3vw,17px);color:var(--muted);
+  margin:12px 0 0;font-style:italic}
+.headshot{width:clamp(108px,13vw,164px);height:auto;aspect-ratio:1;object-fit:cover;
+  border:1px solid var(--rule);flex-shrink:0;display:block}
+@media(max-width:420px){.hero-id{gap:16px}}
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr}}
 
 .eyebrow{
@@ -85,27 +93,28 @@ a{color:inherit}
 
 h1{
   font-family:var(--display);font-weight:800;
-  font-size:clamp(36px,5.4vw,62px);line-height:1.0;letter-spacing:-.038em;
-  margin:0 0 24px;text-wrap:balance;max-width:15ch;
+  font-size:clamp(30px,4.2vw,50px);line-height:1.02;letter-spacing:-.035em;
+  margin:0 0 24px;text-wrap:balance;
 }
 h1 em{font-style:normal;color:var(--accent)}
-.lede{font-size:clamp(17px,1.5vw,19.5px);color:#2C3238;margin:0 0 22px;max-width:50ch}
+.lede{font-size:clamp(17px,1.5vw,19.5px);color:#2C3238;margin:0 0 22px}
 .lede strong{font-weight:600}
 
 .quickfacts{
-  list-style:none;margin:26px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px;
+  list-style:none;margin:auto 0 0;padding:26px 0 0;display:flex;flex-wrap:wrap;gap:8px;
   font-family:var(--mono);font-size:11.5px;letter-spacing:.03em;
 }
 .quickfacts li{border:1px solid var(--rule);background:var(--panel);padding:6px 10px;color:var(--muted)}
 
 /* ---------- credential block ---------- */
-.creds{border:1px solid var(--rule);background:var(--panel)}
+.creds{border:1px solid var(--rule);background:var(--panel);display:flex;flex-direction:column}
 .creds-head{
   font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
   color:var(--muted);padding:14px 20px 12px;border-bottom:1px solid var(--rule);
 }
-.creds dl{margin:0}
-.creds .row{padding:20px;border-bottom:1px solid var(--rule)}
+.creds dl{margin:0;flex:1;display:flex;flex-direction:column}
+.creds .row{padding:20px;border-bottom:1px solid var(--rule);flex:1;
+  display:flex;flex-direction:column;justify-content:center}
 .creds .row:last-child{border-bottom:none}
 .creds dt{
   font-family:var(--display);font-weight:800;letter-spacing:-.03em;
@@ -199,18 +208,18 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
 <!-- ============ HERO ============ -->
 <div class="hero wrap">
   <div class="hero-grid">
-    <div>
+    <div class="hero-copy">
       <p class="eyebrow">New York, NY</p>
-      <h1>Resumes are boring. Doomscroll this instead.</h1>
-      <p class="lede">
-        I studied data science and finance at William &amp; Mary, and I spend my days as a
-        Senior Associate in cybersecurity at KPMG — a role that by design covers a lot of
-        ground and describes almost none of it. So rather than walk you through everything
-        I have ever done, let me just show you a few things I can do.
-      </p>
+      <div class="hero-id">
+        <img class="headshot" src="/headshot.jpg" width="640" height="640"
+             alt="Emma Dubin" loading="eager" decoding="async">
+        <div>
+          <h1><em>Hello world.</em><br>I'm Emma Dubin.</h1>
+          <p class="hero-sub">Let me tell you a little bit about myself.</p>
+        </div>
+      </div>
       <ul class="quickfacts">
         <li>Python · SQL</li>
-        <li>Snowflake · Databricks · AWS</li>
         <li>B.S. Data Science &amp; Finance</li>
       </ul>
     </div>
@@ -228,9 +237,8 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
         </div>
         <div class="row">
           <dt>&lt; 18 months</dt>
-          <dd>From Associate to <b>Senior Associate</b> at KPMG — a full year ahead of the
-          standard timeline, and the only early promotion in a start class of 50+. Not a new
-          pattern: three promotions at a supermarket got there first.</dd>
+          <dd>From Associate to <b>Senior Associate</b> at KPMG — half the standard time to
+          promotion, and the only early promotion in a start class of 50+.</dd>
         </div>
       </dl>
     </div>
@@ -242,8 +250,6 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
   <div class="wrap">
     <div class="sec-head">
       <h2>Technical projects</h2>
-      <p>Write-ups and repos both. Building the thing is half of it; the other half is
-      making it make sense to someone who will never read the code.</p>
     </div>
 
     <div class="cards">
@@ -260,7 +266,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
         <ul class="tags">
           <li>Selenium</li><li>pandas</li><li>Web scraping</li><li>Dynamic pages</li>
         </ul>
-        <a class="card-link" href="/project4/">Read the write-up →</a>
+        <a class="card-link" href="/project3/">Read the write-up →</a>
       </article>
 
       <article class="card">
@@ -320,7 +326,7 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
   <div class="wrap">
     <div class="sec-head">
       <h2>Toolkit</h2>
-      <p>Listed by what I have shipped with, not what I have heard of.</p>
+      <p>A taste of the tools I've worked with.</p>
     </div>
 
     <div class="stack">
@@ -387,21 +393,25 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
     <div class="about">
       <div>
         <p>
-          I am a Senior Associate in Cybersecurity &amp; Technology Risk Advisory at KPMG.
-          Most of my work is figuring out whether a control does what someone claims it does —
-          which, underneath the vocabulary, is an evidence problem.
+          I am a Senior Associate in Cybersecurity &amp; Technology Risk Advisory at KPMG. The
+          role has put me in front of a wide array of systems and software, working alongside
+          100+ engineers and reviewing 100,000+ lines of code across five languages. At its
+          core, the job is to evaluate whether systems are configured well enough to mitigate
+          the risk of a cybersecurity breach — and to detect one when it happens.
         </p>
         <p>
-          Before that I was building ETL pipelines and dashboards in corporate finance, and
-          before that teaching data visualization. I signed my KPMG offer in October 2022,
-          during my senior year; the firm deferred my start by a year with a stipend, which
-          is the gap between graduating in 2023 and beginning at KPMG in 2024.
+          I signed that offer in October 2022, the fall of my senior year, expecting to start
+          right after graduation. The firm then deferred me a full year, in two-month increments. 
+          After 7 months of traveling Europe, and then Bartending in my hometown (in the great state of NJ), 
+          I decided I'd had enough of waiting around and took a job at Houlihan Lokey building ETL pipelines in 
+          Python and Sigma dashboards, reporting directly to the Head of Data &amp; Analytics. A few months of
+          real mentorship and hands-on work later, I made a genuinely difficult decision and honored the offer 
+          I had committed to a year and a half earlier.
         </p>
         <p>
-          My training is in data science and finance, and it is where I want to spend the next
-          few years: product and consumer analytics, ideally somewhere close to the creator
-          economy. This site is where I keep the modelling work that my job description
-          does not cover.
+          Just under four years of work experience later — two and a half of them in
+          consulting — I am looking to move back in house and build a career around what I
+          actually trained for: data science and analytics.
         </p>
       </div>
       <ul class="cv">
@@ -448,10 +458,10 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
         <li class="cv-group"><span>Service industry</span></li>
         <li class="cv-note">
           <p>
-            Six years behind counters and bars, most of it alongside school. It taught me
-            things consulting assumes you already have: how to read a room full of very
-            different people, how to keep moving when six things land at once, how to take
-            criticism without flinching — and how to make a genuinely good drink.
+            Six years behind counters and bars, most of it alongside school. It taught me what every job since has 
+            quietly relied on: how to stay calm when everything lands at once, how to triage competing demands on 
+            the fly, how to handle a difficult customer — or boss — without losing the room, how to take criticism
+            without flinching, and how to make a genuinely good drink.
           </p>
         </li>
         <li>
@@ -481,7 +491,6 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
   <div class="wrap">
     <div class="sec-head">
       <h2>In practice</h2>
-      <p>Where the analytical work shows up in consulting.</p>
     </div>
 
     <div class="practice">
@@ -489,34 +498,30 @@ footer{border-top:1px solid var(--rule);padding:clamp(40px,5vw,64px) 0}
         <h3>Systems, quickly</h3>
         <p>
           Control testing means landing in an unfamiliar system every few weeks —
-          AWS, Snowflake, OneLake, Elastic, ServiceNow — and learning its data model
-          well enough to know what evidence actually proves a control works. The
-          systems change; the reasoning doesn't.
+          AWS, Snowflake, OneLake, Elastic, ServiceNow — the nature of the beast
+          is learning fast or you get left behind (miss your deadlines and booted to the bench.
         </p>
       </div>
       <div>
         <h3>Pipelines that replace manual work</h3>
         <p>
-          Python and SQL pipelines that ingest, validate, transform, and analyse quarterly
-          testing data across 24+ controls — work that used to be done by hand. I serve as the
-          Python and SQL subject matter expert for a 40-person engagement team.
+          Built Python and SQL pipelines that ingest, validate, and transform, quarterly
+          testing data across 24+ controls — work that used to be done by hand.
         </p>
       </div>
       <div>
         <h3>Classification with LLMs</h3>
         <p>
           Built a custom Gemini Gem that reads control evidence and classifies it as
-          sufficient or insufficient against encryption policy requirements. It replaced a
-          slow, subjective review with a consistent one, and the team now uses it.
+          sufficient or insufficient against encryption policy requirements. This alowed testers to
+          make their disposition in a fraction of the time and have more confidence while doing so.
         </p>
       </div>
       <div>
         <h3>Dashboards and the people who use them</h3>
         <p>
-          At Houlihan Lokey, ETL workflows moving 1M+ records out of Snowflake and SQL Server
-          into Python, feeding interactive Sigma dashboards. The harder half was upstream:
-          sitting with stakeholders to define what success actually meant before building
-          anything to measure it.
+          At Houlihan Lokey, ETL workflows moving 1M+ records of raw Workday ledger style 
+          data using Python, feeding interactive Sigma dashboards. 
         </p>
       </div>
     </div>
